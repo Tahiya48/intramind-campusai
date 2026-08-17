@@ -4,6 +4,11 @@
 
 IntraMind CampusAI is an AI based institutional knowledge and intelligence platform developed to assist university students and staff to retrieve information from institutional documents.
 
+The platform is designed to be adaptable to different
+universities, with the initial implementation demonstrated
+using publicly available documentation from a selected
+university.
+
 The system will use Retrieval-Augmented Generation (RAG) to retrieve relevant information from institutional documents and generate grounded responses with references to the original sources.
 ---
 
@@ -41,6 +46,8 @@ The main objectives are to:
 6. Assess the quality of retrieval of documents and generated responses.
 
 7. Discuss the use of machine learning and data analytics in improving the system.
+
+8. Design the system so that its knowledge base can be adapted to different university environments.
 ---
 
 ## 5. Initial Features
@@ -114,6 +121,8 @@ Potential advanced features include:
 Initial conceptual architecture:
 
 Documents
+    ↓
+Document Ingestion
     ↓
 Document Processing
     ↓
