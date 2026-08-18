@@ -1,0 +1,12 @@
+IntraMind CampusAI Test Document
+
+Academic Registration Policy
+
+Students must complete module registration during the designated
+registration period.
+
+Students should review their module requirements before submitting
+their final registration.
+
+This document is created only for testing the IntraMind CampusAI
+PDF ingestion pipeline, it will not be used for anything more.
