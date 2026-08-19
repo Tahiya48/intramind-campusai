@@ -1,8 +1,10 @@
 import pymupdf
 from pathlib import Path
 
+from src.ingestion.document_schema import Document
 
-def extract_text_from_pdf(pdf_path: str) -> list[dict]:
+
+def extract_text_from_pdf(pdf_path: str) -> list[Document]:
     """
     Extract text from a PDF while preserving page-level metadata.
 
@@ -30,14 +32,13 @@ def extract_text_from_pdf(pdf_path: str) -> list[dict]:
 
         if text:
             pages.append(
-                {
-                    "text": text,
-                    "metadata": {
-                        "source": pdf_file.name,
-                        "page": page_number,
-                    },
-                }
-            )
+               Document(
+                   text=text,
+                   source=pdf_file.name,
+                   document_type="pdf",
+                   page=page_number,
+    )
+)
 
     document.close()
 
