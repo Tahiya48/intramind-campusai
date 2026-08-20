@@ -14,3 +14,4 @@ class Document:
     title: Optional[str] = None
     page: Optional[int] = None
     domain: Optional[str] = None
+    chunk_index: Optional[int] = None
