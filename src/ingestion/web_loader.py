@@ -1,9 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+from src.ingestion.document_schema import Document
 
 
-def extract_text_from_webpage(url: str) -> dict:
+def extract_text_from_webpage(url: str) -> Document:
     """
     Extract useful text and metadata from a webpage.
 
@@ -45,11 +46,10 @@ def extract_text_from_webpage(url: str) -> dict:
 
     domain = urlparse(url).netloc
 
-    return {
-        "text": text,
-        "metadata": {
-            "source": url,
-            "title": title,
-            "domain": domain,
-        },
-    }
+    return Document(
+        text=text,
+        source=url,
+        document_type="webpage",
+        title=title,
+        domain=domain,
+    )
