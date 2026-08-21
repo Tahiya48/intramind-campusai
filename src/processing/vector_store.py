@@ -64,3 +64,26 @@ def add_chunks(
         embeddings=embeddings,
         metadatas=metadatas,
     )
+
+def search_chunks(
+    query_embedding: list[float],
+    n_results: int = 3,
+) -> dict:
+    """
+    Search for the most semantically similar document chunks.
+
+    Args:
+        query_embedding: Embedding vector representing the user's query.
+        n_results: Number of relevant chunks to return.
+
+    Returns:
+        Search results from ChromaDB.
+    """
+
+    results = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=n_results,
+        include=["documents", "metadatas", "distances"],
+    )
+
+    return results
