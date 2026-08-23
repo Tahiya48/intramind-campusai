@@ -17,6 +17,7 @@ def retrieve_relevant_chunks(
         Search results containing documents, metadata, and distances.
     """
 
+    #chunks that are too dissimilar are rejected
     query_embedding = create_embedding(query)
 
     results = search_chunks(
@@ -24,4 +25,24 @@ def retrieve_relevant_chunks(
         n_results=n_results,
     )
 
-    return results
+    threshold = 0.7
+
+    filtered_documents = []
+    filtered_metadatas = []
+    filtered_distances = []
+
+    for document, metadata, distance in zip(
+        results["documents"][0],
+        results["metadatas"][0],
+        results["distances"][0],
+    ):
+        if distance <= threshold:
+            filtered_documents.append(document)
+            filtered_metadatas.append(metadata)
+            filtered_distances.append(distance)
+
+    return {
+        "documents": [filtered_documents],
+        "metadatas": [filtered_metadatas],
+        "distances": [filtered_distances],
+    }

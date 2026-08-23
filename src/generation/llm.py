@@ -37,15 +37,18 @@ def generate_rag_answer(
     Returns:
         An answer generated from the retrieved context.
     """
-
+    #handle empty retrieval results
     results = retrieve_relevant_chunks(
         query=query,
         n_results=n_results,
     )
 
-    context = "\n\n".join(
-        results["documents"][0]
-    )
+    documents = results["documents"][0]
+
+    if not documents:
+        return "I could not find the answer in the available documents."
+
+    context = "\n\n".join(documents)
 
     prompt = f"""
 Answer the user's question using only the provided context.
