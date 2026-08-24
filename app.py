@@ -208,140 +208,243 @@ with st.sidebar:
 # --------------------------------------------------
 
 if st.session_state.page == "Chat":
+
     st.caption("WELCOME TO")
 
     st.title("IntraMind CampusAI")
 
     st.markdown(
-     '<p class="subtitle-text">'
-     'Your AI-powered assistant for university information.'
-     '</p>',
-     unsafe_allow_html=True,
+        '<p class="subtitle-text">'
+        'Your AI-powered assistant for university information.'
+        '</p>',
+        unsafe_allow_html=True,
     )
 
 
-# --------------------------------------------------
-# CHAT HISTORY
-# --------------------------------------------------
+    # --------------------------------------------------
+    # CHAT HISTORY
+    # --------------------------------------------------
 
     if "messages" not in st.session_state:
-       st.session_state.messages = []
- 
+        st.session_state.messages = []
 
-# --------------------------------------------------
-# EMPTY STATE
-# --------------------------------------------------
 
-if not st.session_state.messages:
+    # --------------------------------------------------
+    # EMPTY STATE
+    # --------------------------------------------------
 
-    st.subheader("How can I help you today?")
+    if not st.session_state.messages:
 
-    st.write(
-        "Ask me questions based on the documents available "
-        "in the IntraMind knowledge base."
-    )
+        st.subheader("How can I help you today?")
 
-    st.write("")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-
-        registration = st.button(
-            "📚  Module registration\n\nWhen should students complete module registration?",
-            use_container_width=True,
+        st.write(
+            "Ask me questions based on the documents available "
+            "in the IntraMind knowledge base."
         )
 
-        deadlines = st.button(
-            "📅  Academic deadlines\n\nWhat are the important academic deadlines?",
-            use_container_width=True,
-        )
+        st.write("")
 
-    with col2:
+        col1, col2 = st.columns(2)
 
-        policies = st.button(
-            "📄  Academic policies\n\nWhat academic policies are available?",
-            use_container_width=True,
-        )
+        with col1:
 
-        knowledge = st.button(
-            "🔍  Knowledge base\n\nWhat information is available?",
-            use_container_width=True,
-        )
+            registration = st.button(
+                "📚  Module registration\n\nWhen should students complete module registration?",
+                use_container_width=True,
+            )
 
-else:
-    registration = False
-    deadlines = False
-    policies = False
-    knowledge = False
+            deadlines = st.button(
+                "📅  Academic deadlines\n\nWhat are the important academic deadlines?",
+                use_container_width=True,
+            )
 
+        with col2:
 
+            policies = st.button(
+                "📄  Academic policies\n\nWhat academic policies are available?",
+                use_container_width=True,
+            )
 
-# --------------------------------------------------
-# DISPLAY MESSAGES
-# --------------------------------------------------
-
-for message in st.session_state.messages:
-
-    if message["role"] == "user":
-
-        st.markdown("##### 👤 You")
-        st.info(message["content"])
+            knowledge = st.button(
+                "🔍  Knowledge base\n\nWhat information is available?",
+                use_container_width=True,
+            )
 
     else:
 
-        st.markdown("##### 🎓 IntraMind")
-        st.success(message["content"])
-
-# --------------------------------------------------
-# QUESTION INPUT
-# --------------------------------------------------
-
-question = st.chat_input("Ask IntraMind a question...")
+        registration = False
+        deadlines = False
+        policies = False
+        knowledge = False
 
 
-# --------------------------------------------------
-# SUGGESTION BUTTONS
-# --------------------------------------------------
+    # --------------------------------------------------
+    # DISPLAY MESSAGES
+    # --------------------------------------------------
 
-if registration:
-    question = "When should students complete module registration?"
+    for message in st.session_state.messages:
 
-elif deadlines:
-    question = "What are the important academic deadlines?"
+        if message["role"] == "user":
 
-elif policies:
-    question = "What academic policies are available?"
+            st.markdown("##### 👤 You")
+            st.info(message["content"])
 
-elif knowledge:
-    question = "What information is available in the knowledge base?"
+        else:
+
+            st.markdown("##### 🎓 IntraMind")
+            st.success(message["content"])
 
 
-# --------------------------------------------------
-# GENERATE ANSWER
-# --------------------------------------------------
+    # --------------------------------------------------
+    # QUESTION INPUT
+    # --------------------------------------------------
 
-if question:
+    question = st.chat_input("Ask IntraMind a question...")
 
-    st.session_state.messages.append(
-        {
-            "role": "user",
-            "content": question,
-        }
+
+    # --------------------------------------------------
+    # SUGGESTION BUTTONS
+    # --------------------------------------------------
+
+    if registration:
+        question = "When should students complete module registration?"
+
+    elif deadlines:
+        question = "What are the important academic deadlines?"
+
+    elif policies:
+        question = "What academic policies are available?"
+
+    elif knowledge:
+        question = "What information is available in the knowledge base?"
+
+
+    # --------------------------------------------------
+    # GENERATE ANSWER
+    # --------------------------------------------------
+
+    if question:
+
+        st.session_state.messages.append(
+            {
+                "role": "user",
+                "content": question,
+            }
+        )
+
+        with st.spinner("IntraMind is thinking..."):
+
+            answer = generate_rag_answer(question)
+
+        st.session_state.messages.append(
+            {
+                "role": "assistant",
+                "content": answer,
+            }
+        )
+
+        st.rerun()
+
+elif st.session_state.page == "Documents":
+
+    st.caption("DOCUMENT LIBRARY")
+
+    st.title("University Documents")
+
+    st.markdown(
+        '<p class="subtitle-text">'
+        'Browse and read the documents currently available to IntraMind.'
+        '</p>',
+        unsafe_allow_html=True,
     )
 
-    with st.spinner("IntraMind is thinking..."):
+    st.divider()
 
-       answer = generate_rag_answer(question)
+    st.subheader("📄 Available Documents")
 
-    st.session_state.messages.append(
-        {
-            "role": "assistant",
-            "content": answer,
-        }
+    from pathlib import Path
+
+    docs_path = Path(__file__).parent / "docs"
+
+    if docs_path.exists():
+
+        documents = list(docs_path.glob("*.md"))
+
+        if documents:
+
+            for document in documents:
+
+                with st.expander(f"📄 {document.name}"):
+
+                    content = document.read_text(encoding="utf-8")
+
+                    st.text(content)
+
+        else:
+
+            st.warning("No Markdown documents were found.")
+
+    else:
+
+        st.error("The docs folder could not be found.")
+
+
+elif st.session_state.page == "Knowledge Base":
+
+    st.caption("KNOWLEDGE BASE")
+
+    st.title("IntraMind Knowledge Base")
+
+    st.markdown(
+        '<p class="subtitle-text">'
+        'Explore the information currently available to IntraMind.'
+        '</p>',
+        unsafe_allow_html=True,
     )
 
-    st.rerun()
+    st.divider()
 
+    st.subheader("🔍 About the Knowledge Base")
 
+    st.write(
+        "IntraMind uses a Retrieval-Augmented Generation (RAG) system "
+        "to search relevant university documents before generating an answer."
+    )
+
+    st.info(
+        "The knowledge base is built from the university documents "
+        "currently loaded into the system."
+    )
+
+    from pathlib import Path
+
+    docs_path = Path(__file__).parent / "docs"
+    documents = list(docs_path.glob("*.md"))
+
+    st.divider()
+
+    st.subheader("📊 Knowledge Base Overview")
+
+    st.metric(
+        "Documents Available",
+        len(documents)
+    )
+
+    if documents:
+
+        st.success(
+           f"IntraMind currently has access to {len(documents)} "
+           "documents in its knowledge base."
+        )
+
+        st.subheader("📄 Documents in the Knowledge Base")
+
+        for document in documents:
+            st.write(f"• {document.name}")
+
+    else:
+
+       st.warning(
+          "No documents are currently available in the knowledge base."
+        )
     
