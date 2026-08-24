@@ -12,7 +12,7 @@ def extract_text_from_pdf(pdf_path: str) -> list[Document]:
         pdf_path: Path to the PDF file.
 
     Returns:
-        A list of dictionaries containing page text and metadata.
+        A list of Document objects containing page text and metadata.
     """
 
     pdf_file = Path(pdf_path)
@@ -28,17 +28,19 @@ def extract_text_from_pdf(pdf_path: str) -> list[Document]:
     pages = []
 
     for page_number, page in enumerate(document, start=1):
+
         text = page.get_text("text").strip()
 
         if text:
+
             pages.append(
-               Document(
-                   text=text,
-                   source=pdf_file.name,
-                   document_type="pdf",
-                   page=page_number,
-    )
-)
+                Document(
+                    text=text,
+                    source=pdf_file.name,
+                    document_type="pdf",
+                    page=page_number,
+                )
+            )
 
     document.close()
 
