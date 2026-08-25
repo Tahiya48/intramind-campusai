@@ -14,18 +14,21 @@ def retrieve_relevant_chunks(
         n_results: Number of relevant chunks to retrieve.
 
     Returns:
-        Search results containing documents, metadata, and distances.
+        Search results containing relevant documents,
+        metadata, and distances.
     """
 
-    #chunks that are too dissimilar are rejected
+    # Convert the user's query into an embedding.
     query_embedding = create_embedding(query)
 
+    # Search the vector database.
     results = search_chunks(
         query_embedding=query_embedding,
         n_results=n_results,
     )
 
-    threshold = 0.7
+    # Reject chunks that are too dissimilar.
+    threshold = 1.0
 
     filtered_documents = []
     filtered_metadatas = []
