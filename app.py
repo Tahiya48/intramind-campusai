@@ -220,6 +220,13 @@ if st.session_state.page == "Chat":
         unsafe_allow_html=True,
     )
 
+    col1, col2 = st.columns([6, 1])
+
+    with col2:
+        if st.button("🗑️ Clear Chat"):
+            st.session_state.messages = []
+            st.rerun()
+
 
     # --------------------------------------------------
     # CHAT HISTORY

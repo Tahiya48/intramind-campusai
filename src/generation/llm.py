@@ -1,5 +1,5 @@
-from oauthlib.uri_validate import query
 import ollama
+from src.retrieval.retriever import retrieve_relevant_chunks
 
 
 def generate_answer(prompt: str) -> str:
@@ -20,8 +20,6 @@ def generate_answer(prompt: str) -> str:
 
     return response["response"]
 
-
-from src.retrieval.retriever import retrieve_relevant_chunks
 
 
 def generate_rag_answer(
