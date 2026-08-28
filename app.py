@@ -301,6 +301,13 @@ if st.session_state.page == "Chat":
             st.markdown("##### 🎓 IntraMind")
             st.success(message["content"])
 
+            if "sources" in message and message["sources"]:
+
+                st.markdown("**📚 Sources**")
+
+                for source in message["sources"]:
+                    st.caption(f"📄 {source}")
+
 
     # --------------------------------------------------
     # QUESTION INPUT
@@ -341,14 +348,15 @@ if st.session_state.page == "Chat":
 
         with st.spinner("IntraMind is thinking..."):
 
-            answer = generate_rag_answer(question)
+           result = generate_rag_answer(question)
 
         st.session_state.messages.append(
             {
-                "role": "assistant",
-                "content": answer,
+               "role": "assistant",
+               "content": result["answer"],
+               "sources": result["sources"],
             }
-        )
+       )
 
         st.rerun()
 

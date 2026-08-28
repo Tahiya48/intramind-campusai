@@ -72,4 +72,18 @@ Question:
 Answer:
 """
 
-    return generate_answer(prompt)
+    answer = generate_answer(prompt)
+
+    sources = []
+
+    for metadata in results["metadatas"][0]:
+
+        source = metadata.get("source")
+
+        if source and source not in sources:
+            sources.append(source)
+
+    return {
+        "answer": answer,
+        "sources": sources,
+    }
