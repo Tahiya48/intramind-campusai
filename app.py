@@ -1,7 +1,7 @@
 import streamlit as st
 
 from src.generation.llm import generate_rag_answer
-
+from src.ingestion.pipeline import ingest_documents
 
 # --------------------------------------------------
 # PAGE CONFIGURATION
@@ -422,6 +422,13 @@ elif st.session_state.page == "Knowledge Base":
         "The knowledge base is built from the university documents "
         "currently loaded into the system."
     )
+    if st.button("🔄 Update Knowledge Base"):
+
+       with st.spinner("Updating knowledge base..."):
+
+         ingest_documents()
+
+       st.success("Knowledge base updated successfully!")
 
     from pathlib import Path
 
