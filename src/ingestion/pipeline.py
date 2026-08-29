@@ -4,6 +4,7 @@ from src.ingestion.document_schema import Document
 from src.processing.chunker import chunk_document
 from src.processing.embeddings import create_embeddings
 from src.processing.vector_store import add_chunks
+from src.ingestion.pdf_loader import extract_text_from_pdf
 
 def ingest_documents(
     docs_path: str = "docs",
@@ -22,6 +23,7 @@ def ingest_documents(
 
     documents = []
 
+    # Load Markdown documents
     for file_path in folder.glob("*.md"):
 
         text = file_path.read_text(
@@ -39,35 +41,44 @@ def ingest_documents(
                 )
             )
 
-            if not documents:
-               print("No documents found to ingest.")
-               return
+    # Load PDF documents
+    for file_path in folder.glob("*.pdf"):
 
-            all_chunks = [] 
+        pdf_documents = extract_text_from_pdf(
+            str(file_path)
+        )
 
-            for document in documents:
+        documents.extend(pdf_documents)
 
-                chunks = chunk_document(document)
+    if not documents:
+            print("No documents found to ingest.")
+            return
 
-                all_chunks.extend(chunks)
+    all_chunks = [] 
 
-            if not all_chunks:
-                print("No chunks were created.")
-                return
+    for document in documents:
 
-            chunk_texts = [
-                chunk.text
-                for chunk in all_chunks
-            ]
+            chunks = chunk_document(document)
 
-            embeddings = create_embeddings(chunk_texts)    
+            all_chunks.extend(chunks)
 
-            add_chunks(
-                chunks=all_chunks,
-                embeddings=embeddings,
-            )
+    if not all_chunks:
+            print("No chunks were created.")
+            return
 
-            print(
-                 f"Successfully ingested {len(documents)} documents "
-                 f"and {len(all_chunks)} chunks."
-            ) 
+    chunk_texts = [
+            chunk.text
+            for chunk in all_chunks
+    ]
+
+    embeddings = create_embeddings(chunk_texts)    
+
+    add_chunks(
+            chunks=all_chunks,
+            embeddings=embeddings,
+    )
+
+    print(
+        f"Successfully ingested {len(documents)} documents "
+        f"and {len(all_chunks)} chunks."
+    ) 
