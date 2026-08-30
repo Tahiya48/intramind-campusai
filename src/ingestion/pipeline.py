@@ -5,6 +5,7 @@ from src.processing.chunker import chunk_document
 from src.processing.embeddings import create_embeddings
 from src.processing.vector_store import add_chunks
 from src.ingestion.pdf_loader import extract_text_from_pdf
+from src.ingestion.web_loader import extract_text_from_webpage
 
 def ingest_documents(
     docs_path: str = "docs",
@@ -49,6 +50,8 @@ def ingest_documents(
         )
 
         documents.extend(pdf_documents)
+
+
 
     if not documents:
             print("No documents found to ingest.")
