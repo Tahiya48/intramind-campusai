@@ -386,25 +386,54 @@ elif st.session_state.page == "Documents":
 
     if docs_path.exists():
 
-        documents = list(docs_path.glob("*.md"))
+        markdown_documents = list(
+            docs_path.glob("*.md")
+        )
+
+        pdf_documents = list(
+            docs_path.glob("*.pdf")
+        )
+
+        documents = markdown_documents + pdf_documents
 
         if documents:
 
             for document in documents:
 
-                with st.expander(f"📄 {document.name}"):
+                if document.suffix.lower() == ".md":
 
-                    content = document.read_text(encoding="utf-8")
+                    with st.expander(
+                        f"📄 {document.name}"
+                    ):
 
-                    st.text(content)
+                        content = document.read_text(
+                            encoding="utf-8"
+                        )
+
+                        st.text(content)
+
+                elif document.suffix.lower() == ".pdf":
+
+                    with st.expander(
+                        f"📕 {document.name}"
+                    ):
+
+                        st.write(
+                            "PDF document available "
+                            "in the knowledge base."
+                        )
 
         else:
 
-            st.warning("No Markdown documents were found.")
+            st.warning(
+                "No documents were found."
+            )
 
     else:
 
-        st.error("The docs folder could not be found.")
+        st.error(
+            "The docs folder could not be found."
+        )
 
 
 elif st.session_state.page == "Knowledge Base":
