@@ -4,7 +4,7 @@ from src.processing.vector_store import search_chunks
 
 def retrieve_relevant_chunks(
     query: str,
-    n_results: int = 3,
+    n_results: int = 5,
 ) -> dict:
     """
     Retrieve the document chunks most relevant to a user's query.
