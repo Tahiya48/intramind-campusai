@@ -24,8 +24,8 @@ def generate_answer(prompt: str) -> str:
 
 def generate_rag_answer(
     query: str,
-    n_results: int = 3,
-) -> str:
+    n_results: int = 10,
+) -> dict:
     """
     Generate an answer using relevant document chunks as context.
 
@@ -45,7 +45,10 @@ def generate_rag_answer(
     documents = results["documents"][0]
 
     if not documents:
-        return "I could not find the answer in the available documents."
+        return {
+           "answer": "I could not find the answer in the available documents.",
+           "sources": [],
+        }
 
     context = "\n\n".join(documents)
 

@@ -340,22 +340,25 @@ if st.session_state.page == "Chat":
     if question:
 
         st.session_state.messages.append(
-            {
-                "role": "user",
-                "content": question,
-            }
+          {
+             "role": "user",
+             "content": question,
+          }
         )
 
         with st.spinner("IntraMind is thinking..."):
 
            result = generate_rag_answer(question)
 
+        answer = result["answer"]
+        sources = result["sources"]
+
         st.session_state.messages.append(
-            {
-               "role": "assistant",
-               "content": result["answer"],
-               "sources": result["sources"],
-            }
+           {
+              "role": "assistant",
+              "content": answer,
+              "sources": sources,
+           }
        )
 
         st.rerun()
