@@ -473,7 +473,16 @@ elif st.session_state.page == "Knowledge Base":
     from pathlib import Path
 
     docs_path = Path(__file__).parent / "docs"
-    documents = list(docs_path.glob("*.md"))
+
+    markdown_documents = list(
+        docs_path.glob("*.md")
+    )
+
+    pdf_documents = list(
+        docs_path.glob("*.pdf")
+    )
+
+    documents = markdown_documents + pdf_documents
 
     st.divider()
 
