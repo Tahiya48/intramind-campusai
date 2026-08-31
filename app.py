@@ -2,6 +2,7 @@ import streamlit as st
 
 from src.generation.llm import generate_rag_answer
 from src.ingestion.pipeline import ingest_documents
+from src.processing.vector_store import collection
 
 # --------------------------------------------------
 # PAGE CONFIGURATION
@@ -484,30 +485,73 @@ elif st.session_state.page == "Knowledge Base":
 
     documents = markdown_documents + pdf_documents
 
-    st.divider()
+st.divider()
 
-    st.subheader("📊 Knowledge Base Overview")
+st.subheader("📊 Knowledge Base Overview")
+
+total_documents = len(documents)
+total_chunks = collection.count()
+
+markdown_count = len(markdown_documents)
+pdf_count = len(pdf_documents)
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
 
     st.metric(
         "Documents Available",
-        len(documents)
+        total_documents
     )
 
-    if documents:
+with col2:
 
-        st.success(
-           f"IntraMind currently has access to {len(documents)} "
-           "documents in its knowledge base."
+    st.metric(
+        "Total Chunks",
+        total_chunks
+    )
+
+with col3:
+
+    st.metric(
+        "Document Types",
+        2
+    )
+
+if documents:
+
+    st.success(
+        f"IntraMind currently has access to {total_documents} "
+        "documents in its knowledge base."
+    )
+
+    st.subheader("📄 Document Types")
+
+    type_col1, type_col2 = st.columns(2)
+
+    with type_col1:
+
+        st.write(
+            f"📄 Markdown documents: {markdown_count}"
         )
 
-        st.subheader("📄 Documents in the Knowledge Base")
+    with type_col2:
 
-        for document in documents:
-            st.write(f"• {document.name}")
-
-    else:
-
-       st.warning(
-          "No documents are currently available in the knowledge base."
+        st.write(
+            f"📕 PDF documents: {pdf_count}"
         )
+
+    st.subheader("📚 Documents in the Knowledge Base")
+
+    for document in documents:
+
+        st.write(
+            f"• {document.name}"
+        )
+
+else:
+
+    st.warning(
+        "No documents are currently available in the knowledge base."
+    )
     
