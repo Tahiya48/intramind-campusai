@@ -22,6 +22,16 @@ def ingest_documents(
             f"Documents folder not found: {docs_path}"
         )
 
+    # Clear the existing knowledge base before rebuilding it.
+    from src.processing.vector_store import collection
+
+    existing_data = collection.get()
+
+    if existing_data["ids"]:
+        collection.delete(
+            ids=existing_data["ids"]
+        )
+
     documents = []
 
     # Load Markdown documents
