@@ -3,6 +3,7 @@ import streamlit as st
 from src.generation.llm import generate_rag_answer
 from src.ingestion.pipeline import ingest_documents
 from src.processing.vector_store import collection
+from src.ingestion.pdf_loader import extract_text_from_pdf
 
 # --------------------------------------------------
 # PAGE CONFIGURATION
@@ -419,10 +420,24 @@ elif st.session_state.page == "Documents":
                         f"📕 {document.name}"
                     ):
 
-                        st.write(
-                            "PDF document available "
-                            "in the knowledge base."
+                        pdf_documents = extract_text_from_pdf(
+                            str(document)
                         )
+
+                        if pdf_documents:
+
+                            for pdf_document in pdf_documents:
+
+                                st.text(
+                                    pdf_document.text
+                                )
+
+                        else:
+
+                            st.warning(
+                                "No text could be extracted "
+                                "from this PDF."
+                            )
 
         else:
 
@@ -435,6 +450,8 @@ elif st.session_state.page == "Documents":
         st.error(
             "The docs folder could not be found."
         )
+
+
 
 
 elif st.session_state.page == "Knowledge Base":
