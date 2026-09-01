@@ -24,7 +24,7 @@ def ingest_documents(
 
     university_folder = folder / "university"
     web_folder = folder / "web"
-    testing_folder = folder / "testing"
+    pdf_folder = folder / "pdf"
 
     # --------------------------------------------------
     # CLEAR EXISTING KNOWLEDGE BASE
@@ -84,10 +84,10 @@ def ingest_documents(
             )
 
     # --------------------------------------------------
-    # LOAD TESTING PDF DOCUMENTS
+    # LOAD SYNTHETIC PDF DOCUMENTS
     # --------------------------------------------------
 
-    for file_path in testing_folder.glob("*.pdf"):
+    for file_path in pdf_folder.glob("*.pdf"):
 
         pdf_documents = extract_text_from_pdf(
             str(file_path)

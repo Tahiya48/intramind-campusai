@@ -1,8 +1,7 @@
 from src.ingestion.web_loader import extract_text_from_webpage
 
 
-url = "https://example.com"
-
+url = "http://localhost:8000/student-services.html"
 document = extract_text_from_webpage(url)
 
 

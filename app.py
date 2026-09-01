@@ -386,71 +386,143 @@ elif st.session_state.page == "Documents":
 
     docs_path = Path(__file__).parent / "docs"
 
-    if docs_path.exists():
+    university_folder = docs_path / "university"
+    web_folder = docs_path / "web"
+    pdf_folder = docs_path / "pdf"
 
-        markdown_documents = list(
-            docs_path.glob("*.md")
+    # --------------------------------------------------
+    # UNIVERSITY DOCUMENTS
+    # --------------------------------------------------
+
+    if university_folder.exists():
+
+        university_documents = sorted(
+            university_folder.glob("*.md"),
+            key=lambda x: x.name.lower()
         )
 
-        pdf_documents = list(
-            docs_path.glob("*.pdf")
+        if university_documents:
+
+            st.markdown("### 🎓 University Documents")
+
+            for document in university_documents:
+
+                with st.expander(
+                    f"📄 {document.name}"
+                ):
+
+                    content = document.read_text(
+                        encoding="utf-8"
+                    )
+
+                    st.markdown(content)
+
+    # --------------------------------------------------
+    # WEB DOCUMENTS
+    # --------------------------------------------------
+
+    if web_folder.exists():
+
+        web_documents = sorted(
+            web_folder.glob("*.md"),
+            key=lambda x: x.name.lower()
         )
 
-        documents = markdown_documents + pdf_documents
+        if web_documents:
 
-        if documents:
+            st.markdown("### 🌐 Web Documents")
 
-            for document in documents:
+            for document in web_documents:
 
-                if document.suffix.lower() == ".md":
+                with st.expander(
+                    f"🌐 {document.name}"
+                ):
 
-                    with st.expander(
-                        f"📄 {document.name}"
-                    ):
+                    content = document.read_text(
+                        encoding="utf-8"
+                    )
 
-                        content = document.read_text(
-                            encoding="utf-8"
-                        )
+                    st.markdown(content)
 
-                        st.text(content)
+    # --------------------------------------------------
+    # PDF DOCUMENTS
+    # --------------------------------------------------
 
-                elif document.suffix.lower() == ".pdf":
+    if pdf_folder.exists():
 
-                    with st.expander(
-                        f"📕 {document.name}"
-                    ):
+        pdf_documents = sorted(
+            pdf_folder.glob("*.pdf"),
+            key=lambda x: x.name.lower()
+        )
 
-                        pdf_documents = extract_text_from_pdf(
-                            str(document)
-                        )
+        if pdf_documents:
 
-                        if pdf_documents:
+            st.markdown("### 📕 PDF Documents")
 
-                            for pdf_document in pdf_documents:
+            for document in pdf_documents:
 
-                                st.text(
-                                    pdf_document.text
-                                )
+                with st.expander(
+                    f"📕 {document.name}"
+                ):
 
-                        else:
+                    extracted_pages = extract_text_from_pdf(
+                        str(document)
+                    )
 
-                            st.warning(
-                                "No text could be extracted "
-                                "from this PDF."
+                    if extracted_pages:
+
+                        for page in extracted_pages:
+
+                            st.markdown(
+                                f"**Page {page.page}**"
                             )
 
-        else:
+                            st.text(
+                                page.text
+                            )
 
-            st.warning(
-                "No documents were found."
-            )
+                            st.divider()
 
-    else:
+                    else:
 
-        st.error(
-            "The docs folder could not be found."
+                        st.warning(
+                            "No text could be extracted "
+                            "from this PDF."
+                        )
+
+    # --------------------------------------------------
+    # CHECK WHETHER ANY DOCUMENTS EXIST
+    # --------------------------------------------------
+
+    university_count = (
+        len(list(university_folder.glob("*.md")))
+        if university_folder.exists()
+        else 0
+    )
+
+    web_count = (
+        len(list(web_folder.glob("*.md")))
+        if web_folder.exists()
+        else 0
+    )
+
+    pdf_count = (
+        len(list(pdf_folder.glob("*.pdf")))
+        if pdf_folder.exists()
+        else 0
+    )
+
+    total_documents = (
+        university_count
+        + web_count
+        + pdf_count
+    )
+
+    if total_documents == 0:
+
+        st.warning(
+            "No documents were found in the knowledge base."
         )
-
 
 
 
@@ -480,95 +552,116 @@ elif st.session_state.page == "Knowledge Base":
         "The knowledge base is built from the university documents "
         "currently loaded into the system."
     )
+
     if st.button("🔄 Update Knowledge Base"):
 
-       with st.spinner("Updating knowledge base..."):
+        with st.spinner("Updating knowledge base..."):
 
-         ingest_documents()
+            ingest_documents()
 
-       st.success("Knowledge base updated successfully!")
+        st.success("Knowledge base updated successfully!")
+
+    # --------------------------------------------------
+    # FIND KNOWLEDGE BASE DOCUMENTS
+    # --------------------------------------------------
 
     from pathlib import Path
 
     docs_path = Path(__file__).parent / "docs"
 
-    markdown_documents = list(
-        docs_path.glob("*.md")
-    )
+    university_folder = docs_path / "university"
+    web_folder = docs_path / "web"
+    pdf_folder = docs_path / "pdf"
 
-    pdf_documents = list(
-        docs_path.glob("*.pdf")
-    )
+    documents = []
 
-    documents = markdown_documents + pdf_documents
+    # Synthetic university documents
+    if university_folder.exists():
 
-st.divider()
+        documents.extend(
+            university_folder.glob("*.md")
+        )
 
-st.subheader("📊 Knowledge Base Overview")
+    # Synthetic webpage documents
+    if web_folder.exists():
 
-total_documents = len(documents)
-total_chunks = collection.count()
+        documents.extend(
+            web_folder.glob("*.md")
+        )
 
-markdown_count = len(markdown_documents)
-pdf_count = len(pdf_documents)
+    # Synthetic PDF documents
+    if pdf_folder.exists():
 
-col1, col2, col3 = st.columns(3)
+        documents.extend(
+            pdf_folder.glob("*.pdf")
+        )
 
-with col1:
+    st.divider()
+
+    # --------------------------------------------------
+    # KNOWLEDGE BASE OVERVIEW
+    # --------------------------------------------------
+
+    st.subheader("📊 Knowledge Base Overview")
+
+    total_documents = len(documents)
 
     st.metric(
         "Documents Available",
         total_documents
     )
 
-with col2:
+    # --------------------------------------------------
+    # DOCUMENT TYPES
+    # --------------------------------------------------
 
-    st.metric(
-        "Total Chunks",
-        total_chunks
+    markdown_count = len(
+        list(university_folder.glob("*.md"))
+    ) if university_folder.exists() else 0
+
+    webpage_count = len(
+        list(web_folder.glob("*.md"))
+    ) if web_folder.exists() else 0
+
+    pdf_count = len(
+        list(pdf_folder.glob("*.pdf"))
+    ) if pdf_folder.exists() else 0
+
+    total_types = sum(
+        count > 0
+        for count in [
+            markdown_count,
+            webpage_count,
+            pdf_count,
+        ]
     )
-
-with col3:
 
     st.metric(
         "Document Types",
-        2
+        total_types
     )
 
-if documents:
+    if documents:
 
-    st.success(
-        f"IntraMind currently has access to {total_documents} "
-        "documents in its knowledge base."
-    )
-
-    st.subheader("📄 Document Types")
-
-    type_col1, type_col2 = st.columns(2)
-
-    with type_col1:
-
-        st.write(
-            f"📄 Markdown documents: {markdown_count}"
+        st.success(
+            f"IntraMind currently has access to "
+            f"{total_documents} documents in its knowledge base."
         )
 
-    with type_col2:
+        st.subheader("📄 Documents in the Knowledge Base")
 
-        st.write(
-            f"📕 PDF documents: {pdf_count}"
+        for document in sorted(
+            documents,
+            key=lambda x: x.name.lower()
+        ):
+
+            st.write(
+                f"• {document.name}"
+            )
+
+    else:
+
+        st.warning(
+            "No documents are currently available "
+            "in the knowledge base."
         )
-
-    st.subheader("📚 Documents in the Knowledge Base")
-
-    for document in documents:
-
-        st.write(
-            f"• {document.name}"
-        )
-
-else:
-
-    st.warning(
-        "No documents are currently available in the knowledge base."
-    )
-    

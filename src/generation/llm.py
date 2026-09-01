@@ -2,6 +2,11 @@ import ollama
 from src.retrieval.retriever import retrieve_relevant_chunks
 
 
+FALLBACK_ANSWER = (
+    "I could not find the answer in the available documents."
+)
+
+
 def generate_answer(prompt: str) -> str:
     """
     Send a prompt to the local Ollama model and return its response.
@@ -21,7 +26,6 @@ def generate_answer(prompt: str) -> str:
     return response["response"]
 
 
-
 def generate_rag_answer(
     query: str,
     n_results: int = 10,
@@ -34,9 +38,11 @@ def generate_rag_answer(
         n_results: Number of relevant chunks to retrieve.
 
     Returns:
-        An answer generated from the retrieved context.
+        A dictionary containing the generated answer
+        and the sources that support the answer.
     """
-    #handle empty retrieval results
+
+    # Retrieve relevant document chunks.
     results = retrieve_relevant_chunks(
         query=query,
         n_results=n_results,
@@ -44,12 +50,15 @@ def generate_rag_answer(
 
     documents = results["documents"][0]
 
+    # If retrieval found no relevant documents,
+    # return the fallback answer without any sources.
     if not documents:
         return {
-           "answer": "I could not find the answer in the available documents.",
-           "sources": [],
+            "answer": FALLBACK_ANSWER,
+            "sources": [],
         }
 
+    # Combine retrieved chunks into the context given to the LLM.
     context = "\n\n".join(documents)
 
     prompt = f"""
@@ -58,13 +67,14 @@ You are IntraMind CampusAI, a university information assistant.
 Answer the user's question using ONLY the information provided
 in the context below.
 
-Do not use outside knowledge.
-Do not make up information.
-Do not add information that is not supported by the context.
+Rules:
+- Do not use outside knowledge.
+- Do not make up information.
+- Do not add information that is not supported by the context.
+- If the context does not contain enough information to answer
+  the question, respond exactly with:
 
-If the answer cannot be found in the context, respond exactly with:
-
-"I could not find the answer in the available documents."
+"{FALLBACK_ANSWER}"
 
 Context:
 {context}
@@ -75,8 +85,18 @@ Question:
 Answer:
 """
 
-    answer = generate_answer(prompt)
+    answer = generate_answer(prompt).strip()
 
+    # If the LLM determines that the answer is not available
+    # in the retrieved context, do not display the retrieved
+    # documents as sources.
+    if answer == FALLBACK_ANSWER:
+        return {
+            "answer": FALLBACK_ANSWER,
+            "sources": [],
+        }
+
+    # Collect unique sources only when an actual answer was generated.
     sources = []
 
     for metadata in results["metadatas"][0]:
