@@ -28,7 +28,7 @@ def retrieve_relevant_chunks(
     )
 
     # Reject chunks that are too dissimilar.
-    threshold = 1.3
+    threshold = 0.8
 
     filtered_documents = []
     filtered_metadatas = []
