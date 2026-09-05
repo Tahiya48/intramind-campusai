@@ -1,16 +1,18 @@
 import chromadb
 
+from src.ingestion.document_schema import Document
+
 
 # Create a local persistent ChromaDB client.
-client = chromadb.PersistentClient(path="data/chroma")
+client = chromadb.PersistentClient(
+    path="data/chroma"
+)
 
 
 # Get the collection, or create it if it does not exist.
 collection = client.get_or_create_collection(
     name="campus_documents"
 )
-
-from src.ingestion.document_schema import Document
 
 
 def add_chunks(
@@ -35,11 +37,14 @@ def add_chunks(
     metadatas = []
 
     for index, chunk in enumerate(chunks):
+
         ids.append(
             f"{chunk.source}_{chunk.page}_{chunk.chunk_index}"
         )
 
-        documents.append(chunk.text)
+        documents.append(
+            chunk.text
+        )
 
         metadata = {
             "source": chunk.source,
@@ -65,6 +70,7 @@ def add_chunks(
         metadatas=metadatas,
     )
 
+
 def search_chunks(
     query_embedding: list[float],
     n_results: int = 3,
@@ -74,7 +80,7 @@ def search_chunks(
 
     Args:
         query_embedding: Embedding vector representing the user's query.
-        n_results: Number of relevant chunks to return.
+        n_results: Number of relevant chunks to retrieve.
 
     Returns:
         Search results from ChromaDB.
@@ -83,7 +89,11 @@ def search_chunks(
     results = collection.query(
         query_embeddings=[query_embedding],
         n_results=n_results,
-        include=["documents", "metadatas", "distances"],
+        include=[
+            "documents",
+            "metadatas",
+            "distances",
+        ],
     )
 
     return results
