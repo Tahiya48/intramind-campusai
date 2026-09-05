@@ -71,8 +71,13 @@ Rules:
 - Do not use outside knowledge.
 - Do not make up information.
 - Do not add information that is not supported by the context.
-- If the context does not contain enough information to answer
-  the question, respond exactly with:
+- If the question has multiple parts, answer every part that is
+  supported by the context.
+- If some parts of the question are not supported by the context,
+  clearly state that the available documents do not contain enough
+  information for those parts.
+- If none of the question can be answered from the context,
+  respond exactly with:
 
 "{FALLBACK_ANSWER}"
 
