@@ -1,7 +1,7 @@
 from src.ingestion.pdf_loader import extract_text_from_pdf
 
 
-pdf_path = "tests/sample_document.pdf"
+pdf_path = "docs/testing/sample_document.pdf"
 
 pages = extract_text_from_pdf(pdf_path)
 

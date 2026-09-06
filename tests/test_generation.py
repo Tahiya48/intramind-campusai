@@ -1,5 +1,9 @@
+from src.ingestion.pipeline import ingest_documents
 from src.generation.llm import generate_rag_answer
 
+
+# Ingest the documents before running the tests
+ingest_documents()
 
 TEST_CASES = [
     {
