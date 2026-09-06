@@ -59,9 +59,24 @@ def generate_rag_answer(
         }
 
     # Combine retrieved chunks into the context given to the LLM.
-    context = "\n\n".join(documents)
+    # Include the source name so the LLM knows exactly where each
+    # piece of information came from.
 
-    prompt = f"""
+    context_parts = []
+
+    for document, metadata in zip(
+        documents,
+        results["metadatas"][0],
+    ):
+        source = metadata.get("source", "Unknown source")
+
+        context_parts.append(
+            f"[SOURCE: {source}]\n{document}"
+        )
+
+    context = "\n\n".join(context_parts)
+
+    prompt = f""""
 You are IntraMind CampusAI, a university information assistant.
 
 Your task is to answer the user's question using ONLY the retrieved
@@ -93,6 +108,16 @@ STRICT RULES:
 12. When the user asks where information can be found, name the
     relevant university resource or document only if that name is
     explicitly supported by the context.
+13. When answering "where can I find..." questions, only name a
+    specific resource, office, system, announcement, or service if
+    that exact resource is explicitly mentioned in the context.
+14. Do not turn general information into a specific resource.
+    If the context explains a topic but does not specify where the
+    information can be found, say that the available documents
+    provide the information but do not specify a separate resource.
+15. Do not state that documents can be accessed through a website,
+    or that students should contact an office or service, unless
+    the context explicitly states this for the topic being asked.
 
 Retrieved Context:
 {context}
