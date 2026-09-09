@@ -1,31 +1,39 @@
 # IntraMind CampusAI
 
-> An institutional knowledge and intelligence platform for university communities driven by AI.
+> An AI-powered institutional knowledge assistant for university communities.
 
 ## Overview
 
-IntraMind CampusAI is an AI-based university information assistant that allows students to ask questions in natural language and receive institutional information.
+IntraMind CampusAI is an AI-driven university information assistant that lets students ask questions about university information using natural language.
 
-The system uses Retrieval-Augmented Generation (RAG) to retrieve relevant information from a university knowledge base for generation of an answer by a local Large Language Model (LLM).
+The system pulls relevant information from the university knowledge base and gives it as context to a local Large Language Model (LLM) using Retrieval-Augmented Generation (RAG).
 
-Rather than answering based on the knowledge the model is trained with, IntraMind answers based on the documents in its knowledge base.
+IntraMind does not just use the general knowledge of the model, it actually generates answers from the information within its knowledge base.
+
+The project uses a synthetic university knowledge base generated for the purpose of reproducible development, testing and demonstration of the RAG pipeline.
+
+---
 
 ## Key Features
 
-- University information assistant in natural language
-- Retrieval-Enhanced Generation (REG)
-- Semantic-based document retrieval
-- Olama for local LLM generation
-- ChromaDB vector database (chroma)
-- Embeddings of Sentence transformer
-- Markdown document processing
+- Natural-language university information assistant
+- Retrieval-Augmented Generation (RAG)
+- Semantic document retrieval
+- Local LLM generation using Ollama
+- ChromaDB vector database
+- Sentence Transformer embeddings
+- Markdown document ingestion
 - PDF document ingestion
-- Web page ingestion (synthetic)
-- Attribution of sources for generated answers
-- Protection from unsupported answers
-- Streamlit interactive interface- Overview of Knowledge Base
-- Document library with enhanced document contents
-- Enhance knowledge base functionality
+- Webpage ingestion
+- Source attribution for generated answers
+- Grounded responses based on retrieved information
+- Fallback responses for unsupported questions
+- Streamlit interactive interface
+- Knowledge Base overview
+- University document library
+- Automated retrieval and generation evaluation
+
+---
 
 ## How It Works
 
