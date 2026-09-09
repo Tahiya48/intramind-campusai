@@ -2,7 +2,7 @@ from src.processing.embeddings import create_embedding
 from src.processing.vector_store import search_chunks
 
 
-THRESHOLD = 0.8
+THRESHOLD = 1.0
 
 
 def _search_single_query(
