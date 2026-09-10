@@ -1,9 +1,11 @@
 import streamlit as st
+import re
 
 from src.generation.llm import generate_rag_answer
 from src.ingestion.pipeline import ingest_documents
 from src.processing.vector_store import collection
 from src.ingestion.pdf_loader import extract_text_from_pdf
+
 
 # --------------------------------------------------
 # PAGE CONFIGURATION
@@ -301,8 +303,13 @@ if st.session_state.page == "Chat":
         else:
 
             st.markdown("##### 🎓 IntraMind")
-            st.success(message["content"])
+            safe_content = re.sub(
+              r"\[([^\]]+)\]\([^)]+\)",
+              r"\1",
+              message["content"],
+            )
 
+            st.success(safe_content)
             if "sources" in message and message["sources"]:
 
                 st.markdown("**📚 Sources**")
