@@ -216,5 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local virtual environment
 .venv/
+
+# Local vector database
 data/
