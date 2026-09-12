@@ -63,23 +63,21 @@ def retrieve_relevant_chunks(
     if "module registration" in query_lower:
 
         topic_queries.append(
-            "Where can students find information about module registration?"
+            "module registration information and support"
         )
 
     # --------------------------------------------------
     # INTERNSHIPS
     # --------------------------------------------------
-
     if "internship" in query_lower or "internships" in query_lower:
 
         topic_queries.append(
-            "Where can students find information about internships?"
+            "internship information and support"
         )
 
     # --------------------------------------------------
     # NORMAL SINGLE-TOPIC QUERY
     # --------------------------------------------------
-
     if len(topic_queries) <= 1:
 
         results = _search_single_query(
