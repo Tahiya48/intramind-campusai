@@ -104,8 +104,8 @@ The RAG pipeline was evaluated using predefined questions covering both supporte
 
 Retrieval Evaluation
 
-14/14 questions retrieved the expected information
-Retrieval accuracy: 100%
+13/14 questions retrieved the expected information
+Retrieval accuracy: 92.86%
 
 The evaluation also includes unsupported questions to verify that the system does not retrieve irrelevant university information.
 

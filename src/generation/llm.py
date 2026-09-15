@@ -70,10 +70,8 @@ def generate_rag_answer(
     ):
         source = metadata.get("source", "Unknown source")
 
-        context_parts.append(
-            f"[SOURCE: {source}]\n{document}"
-        )
-
+        context_parts.append(document)
+        
     context = "\n\n".join(context_parts)
 
     prompt = f""""
