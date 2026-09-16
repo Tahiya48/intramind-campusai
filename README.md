@@ -4,13 +4,13 @@
 
 ## Overview
 
-IntraMind CampusAI is an AI-driven university information assistant that lets students ask questions about university information using natural language.
+IntraMind CampusAI is an AI-powered institutional knowledge assistant that uses Retrieval-Augmented Generation (RAG) to answer questions related to the university based on a controlled knowledge base.
 
-The system pulls relevant information from the university knowledge base and gives it as context to a local Large Language Model (LLM) using Retrieval-Augmented Generation (RAG).
+System takes Markdown, PDF and webpage content, converts documents to semantic embeddings, stores them in ChromaDB, retrieves relevant information and passes the retrieved context to a local Llama 3.2 3B model running through Ollama.
 
-IntraMind does not just use the general knowledge of the model, it actually generates answers from the information within its knowledge base.
+This architecture helps to ensure that the responses are grounded on the indexed knowledge base rather than relying only on the general knowledge of the LLM.
 
-The project uses a synthetic university knowledge base generated for the purpose of reproducible development, testing and demonstration of the RAG pipeline.
+The project uses a synthetic university knowledge base for reproducible development, testing and demonstration.
 
 ---
 
@@ -102,20 +102,19 @@ The project also includes PDF and webpage sources to demonstrate multiple docume
 
 The RAG pipeline was evaluated using predefined questions covering both supported and unsupported queries.
 
-Retrieval Evaluation
+### Retrieval Evaluation
 
-13/14 questions retrieved the expected information
-Retrieval accuracy: 92.86%
+- **13/14** questions retrieved the expected information
+- **Retrieval accuracy: 92.86%**
 
 The evaluation also includes unsupported questions to verify that the system does not retrieve irrelevant university information.
 
-Generation Evaluation
+### Generation Evaluation
 
-5/5 test cases produced the expected results
-Generation accuracy: 100%
+- **5/5** test cases produced the expected results
+- **Generation accuracy: 100%**
 
 The generation tests evaluate whether the LLM produces answers grounded in the retrieved knowledge base and correctly falls back when information is unavailable.
-
 ---
 
 ## How to Run
